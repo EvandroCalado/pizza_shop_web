@@ -6,26 +6,29 @@ import { Toaster } from '@/components/ui/sonner';
 import { AppLayout, AuthLayout } from '@/pages/_layouts';
 import { Dashboard } from '@/pages/app';
 import { SignIn, SignUp } from '@/pages/auth';
+import { ThemeProvider } from './components/theme';
 
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <HelmetProvider>
-    <Helmet titleTemplate='%s | Pizza Shop' />
-    <Toaster richColors />
-    <BrowserRouter>
-      <Routes>
-        {/* app */}
-        <Route path='/' element={<AppLayout />}>
-          <Route index element={<Dashboard />} />
-        </Route>
+    <ThemeProvider defaultTheme='system' storageKey='pizza-shop-theme'>
+      <Helmet titleTemplate='%s | Pizza Shop' />
+      <Toaster richColors />
+      <BrowserRouter>
+        <Routes>
+          {/* app */}
+          <Route path='/' element={<AppLayout />}>
+            <Route index element={<Dashboard />} />
+          </Route>
 
-        {/* auth */}
-        <Route element={<AuthLayout />}>
-          <Route path='sign-in' element={<SignIn />} />
-          <Route path='sign-up' element={<SignUp />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          {/* auth */}
+          <Route element={<AuthLayout />}>
+            <Route path='sign-in' element={<SignIn />} />
+            <Route path='sign-up' element={<SignUp />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   </HelmetProvider>,
 );
