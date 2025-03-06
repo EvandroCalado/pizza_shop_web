@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 
 import { Toaster } from '@/components/ui/sonner';
 import { AppLayout, AuthLayout } from '@/pages/_layouts';
-import { Dashboard } from '@/pages/app';
+import { Dashboard, Orders } from '@/pages/app';
 import { SignIn, SignUp } from '@/pages/auth';
 import { ThemeProvider } from './components/theme';
 
@@ -20,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
           {/* app */}
           <Route path='/' element={<AppLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path='orders' element={<Orders />} />
           </Route>
 
           {/* auth */}
