@@ -25,13 +25,13 @@ export const OrderTableRow = () => {
       <TableCell className='font-medium'>Evandro Calado da Silva</TableCell>
       <TableCell className='font-medium'>R&149,90</TableCell>
       <TableCell>
-        <Button variant='outline' size='sm' className='cursor-pointer'>
+        <Button variant='secondary' size='sm' className='cursor-pointer'>
           <ArrowRight className='size-3' />
           Aprovar
         </Button>
       </TableCell>
       <TableCell>
-        <Button variant='secondary' size='sm' className='cursor-pointer'>
+        <Button variant='outline' size='sm' className='cursor-pointer'>
           <X className='size-3' />
           Cancelar
         </Button>

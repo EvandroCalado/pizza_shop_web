@@ -27,11 +27,7 @@ export const OrderTableFilters = () => {
         </SelectContent>
       </Select>
 
-      <Button
-        type='submit'
-        variant={'secondary'}
-        className='w-32 cursor-pointer'
-      >
+      <Button type='submit' variant='secondary' className='w-32 cursor-pointer'>
         <Search className='size-4' /> Filtrar
       </Button>
 
