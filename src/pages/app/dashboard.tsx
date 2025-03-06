@@ -5,6 +5,7 @@ import {
   MonthCanceledOrdersAmount,
   MonthOrdersAmount,
   MonthRevenue,
+  RevenueChart,
 } from '@/components/dashboard';
 
 export const Dashboard = () => {
@@ -20,6 +21,10 @@ export const Dashboard = () => {
           <MonthOrdersAmount />
           <DayOrdersAmount />
           <MonthCanceledOrdersAmount />
+        </div>
+
+        <div className='grid grid-cols-9 gap-4'>
+          <RevenueChart />
         </div>
       </div>
     </>
