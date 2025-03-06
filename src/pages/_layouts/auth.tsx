@@ -3,7 +3,7 @@ import { Link, Outlet } from 'react-router';
 
 export const AuthLayout = () => {
   return (
-    <main className='grid min-h-screen md:grid-cols-2'>
+    <main className='grid min-h-screen antialiased md:grid-cols-2'>
       <div className='border-foreground/5 bg-muted text-muted-foreground hidden h-full flex-col justify-between border-r p-10 md:flex'>
         <Link
           to='/'
