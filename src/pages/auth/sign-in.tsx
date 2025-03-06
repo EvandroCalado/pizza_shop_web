@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -65,6 +66,10 @@ export const SignIn = () => {
               )}
             </Button>
           </form>
+
+          <Button asChild variant={'link'}>
+            <Link to='/sign-up'>Criar uma conta</Link>
+          </Button>
         </div>
       </div>
     </>
