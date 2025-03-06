@@ -1,9 +1,9 @@
 import { Home, Pizza, Utensils } from 'lucide-react';
+import { NavLink } from 'react-router';
 
 import { ModeToggle } from '../theme';
 import { Separator } from '../ui/separator';
 import { AccountMenu } from './account-menu';
-import { NavLink } from './nav-link';
 
 export const Header = () => {
   return (
@@ -14,12 +14,20 @@ export const Header = () => {
         <Separator orientation='vertical' />
 
         <nav className='flex items-center space-x-4 lg:space-x-6'>
-          <NavLink to='/'>
+          <NavLink
+            to='/'
+            end
+            className='text-muted-foreground hover:text-foreground [.active]:text-foreground flex items-center gap-1.5 text-sm font-medium duration-150'
+          >
             <Home className='size-4' />
             <span>Inicio</span>
           </NavLink>
 
-          <NavLink to='/orders'>
+          <NavLink
+            to='/orders'
+            end
+            className='text-muted-foreground hover:text-foreground [.active]:text-foreground flex items-center gap-1.5 text-sm font-medium duration-150'
+          >
             <Utensils className='size-4' />
             <span>Pedidos</span>
           </NavLink>
