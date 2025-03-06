@@ -1,16 +1,14 @@
-import { ArrowRight, Search, X } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 
 import { Button } from '../ui/button';
 import { TableCell, TableRow } from '../ui/table';
+import { OrderDetails } from './orders-details';
 
 export const OrderTableRow = () => {
   return (
     <TableRow>
       <TableCell>
-        <Button variant='outline' size='sm' className='cursor-pointer'>
-          <Search className='size-3' />
-          <span className='sr-only'>Detalhes do pedido</span>
-        </Button>
+        <OrderDetails />
       </TableCell>
       <TableCell className='font-mono text-xs font-medium'>
         123145646789232
