@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
@@ -6,6 +7,7 @@ import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { signin } from '@/api/sign-in';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,12 +27,19 @@ export const SignIn = () => {
     resolver: zodResolver(signInForm),
   });
 
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signin,
+  });
+
   const handleSubmitForm = async (data: SignInForm) => {
-    console.log(data);
+    try {
+      await authenticate({ email: data.email });
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    toast.success('Event has been created.');
+      toast.success('Enviamos um link para o seu email.');
+    } catch (error) {
+      console.log(error);
+      toast.error('Algo deu errado, tente novamente.');
+    }
   };
 
   return (
