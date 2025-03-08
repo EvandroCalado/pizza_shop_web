@@ -1,11 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DialogTitle } from '@radix-ui/react-dialog';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { getManagedRestaurant, updateProfile } from '@/api';
+import {
+  getManagedRestaurant,
+  GetManagedRestaurantResponse,
+  updateProfile,
+} from '@/api';
 import { Button } from '../ui/button';
 import {
   DialogClose,
@@ -25,7 +29,9 @@ const profileSchema = z.object({
 
 type ProfileForm = z.infer<typeof profileSchema>;
 
-export const ProfileModel = () => {
+export const ProfileModal = () => {
+  const queryClient = useQueryClient();
+
   const { data: managedRestaurant } = useQuery({
     queryKey: ['managed-restaurant'],
     queryFn: getManagedRestaurant,
@@ -46,6 +52,23 @@ export const ProfileModel = () => {
 
   const { mutateAsync: updateProfileMutation } = useMutation({
     mutationFn: updateProfile,
+    onSuccess(_, { name, description }) {
+      const cachedProfile =
+        queryClient.getQueryData<GetManagedRestaurantResponse>([
+          'managed-restaurant',
+        ]);
+
+      if (cachedProfile) {
+        queryClient.setQueryData<GetManagedRestaurantResponse>(
+          ['managed-restaurant'],
+          {
+            ...cachedProfile,
+            name,
+            description,
+          },
+        );
+      }
+    },
   });
 
   const handleUpdateProfile = async (data: ProfileForm) => {
@@ -88,11 +111,11 @@ export const ProfileModel = () => {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button type='button' variant='outline'>
+            <Button type='button' variant='outline' className='w-32'>
               Cancelar
             </Button>
           </DialogClose>
-          <Button type='submit' disabled={isSubmitting}>
+          <Button type='submit' disabled={isSubmitting} className='w-32'>
             {isSubmitting ? (
               <span className='animate-pulse'>Salvando...</span>
             ) : (

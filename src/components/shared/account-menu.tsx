@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { Skeleton } from '../ui/skeleton';
-import { ProfileModel } from './profile-model';
+import { ProfileModal } from './profile-modal';
 
 export const AccountMenu = () => {
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
@@ -77,7 +77,7 @@ export const AccountMenu = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ProfileModel />
+      <ProfileModal />
     </Dialog>
   );
 };
