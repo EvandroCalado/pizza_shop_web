@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -19,11 +19,16 @@ const signInForm = z.object({
 type SignInForm = z.infer<typeof signInForm>;
 
 export const SignIn = () => {
+  const [searchParams] = useSearchParams();
+
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<SignInForm>({
+    defaultValues: {
+      email: searchParams.get('email') ?? '',
+    },
     resolver: zodResolver(signInForm),
   });
 
@@ -36,8 +41,7 @@ export const SignIn = () => {
       await authenticate({ email: data.email });
 
       toast.success('Enviamos um link para o seu email.');
-    } catch (error) {
-      console.log(error);
+    } catch {
       toast.error('Algo deu errado, tente novamente.');
     }
   };

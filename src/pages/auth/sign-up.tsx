@@ -1,11 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { signup } from '@/api/sign-up';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,6 +22,8 @@ const signUpForm = z.object({
 type SignUpForm = z.infer<typeof signUpForm>;
 
 export const SignUp = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -28,12 +32,24 @@ export const SignUp = () => {
     resolver: zodResolver(signUpForm),
   });
 
+  const { mutateAsync: registerRestaurant } = useMutation({
+    mutationFn: signup,
+  });
+
   const handleSubmitForm = async (data: SignUpForm) => {
-    console.log(data);
+    try {
+      await registerRestaurant({
+        restaurantName: data.restaurantName,
+        managerName: data.managerName,
+        email: data.email,
+        phone: data.phone,
+      });
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    toast.success('Event has been created.');
+      toast.success('Restaurante criado com sucesso.');
+      navigate(`/sign-in?email=${data.email}`);
+    } catch {
+      toast.error('Algo deu errado, tente novamente.');
+    }
   };
 
   return (
