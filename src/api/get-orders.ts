@@ -26,10 +26,14 @@ type GetOrdersResponse = {
   meta: Meta;
 };
 
-export const getOrders = async () => {
+export type GetOrdersQuery = {
+  pageIndex?: number | null;
+};
+
+export const getOrders = async ({ pageIndex }: GetOrdersQuery) => {
   const response = await api.get<GetOrdersResponse>('/orders', {
     params: {
-      pageIndex: 0,
+      pageIndex,
     },
   });
 
