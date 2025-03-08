@@ -24,7 +24,7 @@ import { Textarea } from '../ui/textarea';
 
 const profileSchema = z.object({
   name: z.string().min(3),
-  description: z.string(),
+  description: z.string().nullable(),
 });
 
 type ProfileForm = z.infer<typeof profileSchema>;
@@ -50,23 +50,36 @@ export const ProfileModal = () => {
     },
   });
 
+  const updateManagedRestaurantCache = (variables: ProfileForm) => {
+    const cachedProfile =
+      queryClient.getQueryData<GetManagedRestaurantResponse>([
+        'managed-restaurant',
+      ]);
+
+    if (cachedProfile) {
+      queryClient.setQueryData<GetManagedRestaurantResponse>(
+        ['managed-restaurant'],
+        {
+          ...cachedProfile,
+          name: variables.name,
+          description: variables.description,
+        },
+      );
+    }
+
+    return { cachedProfile };
+  };
+
   const { mutateAsync: updateProfileMutation } = useMutation({
     mutationFn: updateProfile,
-    onSuccess(_, { name, description }) {
-      const cachedProfile =
-        queryClient.getQueryData<GetManagedRestaurantResponse>([
-          'managed-restaurant',
-        ]);
+    onMutate(variables) {
+      const { cachedProfile } = updateManagedRestaurantCache(variables);
 
-      if (cachedProfile) {
-        queryClient.setQueryData<GetManagedRestaurantResponse>(
-          ['managed-restaurant'],
-          {
-            ...cachedProfile,
-            name,
-            description,
-          },
-        );
+      return { cachedProfile };
+    },
+    onError(_, __, context) {
+      if (context?.cachedProfile) {
+        updateManagedRestaurantCache(context.cachedProfile);
       }
     },
   });
