@@ -16,7 +16,7 @@ export const OrderTableRow = ({ order }: OrderTableRowProps) => {
   return (
     <TableRow>
       <TableCell>
-        <OrderDetails />
+        <OrderDetails orderId={order.orderId} />
       </TableCell>
       <TableCell className='font-mono text-xs font-medium'>
         {order.orderId}
@@ -32,7 +32,7 @@ export const OrderTableRow = ({ order }: OrderTableRowProps) => {
       </TableCell>
       <TableCell className='font-medium'>{order.customerName}</TableCell>
       <TableCell className='font-medium'>
-        {order.total.toLocaleString('pt-BR', {
+        {(order.total / 100).toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
         })}
