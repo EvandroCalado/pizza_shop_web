@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router';
 import { z } from 'zod';
 
-import { getOrders } from '@/api';
+import { getOrders, Status } from '@/api';
 import { OrderTableFilters, OrderTableRow } from '@/components/orders';
 import { Pagination } from '@/components/shared';
 import {
@@ -22,9 +22,13 @@ export const Orders = () => {
     .transform((page) => page - 1)
     .safeParse(searchParams.get('page') ?? 1).data;
 
+  const orderId = searchParams.get('orderId');
+  const customerName = searchParams.get('customerName');
+  const status = searchParams.get('status') as Status | null;
+
   const { data: result } = useQuery({
-    queryKey: ['orders', pageIndex],
-    queryFn: () => getOrders({ pageIndex }),
+    queryKey: ['orders', pageIndex, orderId, customerName, status],
+    queryFn: () => getOrders({ pageIndex, orderId, customerName, status }),
   });
 
   const handlePageChange = (page: number) => {

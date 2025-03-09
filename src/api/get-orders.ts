@@ -5,7 +5,8 @@ export type Status =
   | 'canceled'
   | 'processing'
   | 'delivering'
-  | 'delivered';
+  | 'delivered'
+  | 'all';
 
 export type Order = {
   orderId: string;
@@ -28,12 +29,23 @@ type GetOrdersResponse = {
 
 export type GetOrdersQuery = {
   pageIndex?: number | null;
+  orderId?: string | null;
+  customerName?: string | null;
+  status?: Status | null;
 };
 
-export const getOrders = async ({ pageIndex }: GetOrdersQuery) => {
+export const getOrders = async ({
+  pageIndex,
+  orderId,
+  customerName,
+  status,
+}: GetOrdersQuery) => {
   const response = await api.get<GetOrdersResponse>('/orders', {
     params: {
       pageIndex,
+      orderId,
+      customerName,
+      status: status === 'all' ? null : status,
     },
   });
 

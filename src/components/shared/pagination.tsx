@@ -22,6 +22,10 @@ export const Pagination = ({
 }: PaginationProps) => {
   const totalPages = Math.ceil(totalCount / perPage) || 1;
 
+  if (totalPages === 1) {
+    return null;
+  }
+
   return (
     <div className='flex items-center justify-between'>
       <span className='text-muted-foreground text-sm'>
