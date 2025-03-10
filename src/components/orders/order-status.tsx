@@ -7,6 +7,7 @@ const orderStatusMap: Record<Status, string> = {
   processing: 'Em preparo',
   delivering: 'Em entrega',
   delivered: 'Entregue',
+  all: 'Todos',
 };
 
 type OrderStatusProps = {

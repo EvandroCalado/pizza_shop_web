@@ -22,7 +22,7 @@ export type Meta = {
   totalCount: number;
 };
 
-type GetOrdersResponse = {
+export type GetOrdersResponse = {
   orders: Order[];
   meta: Meta;
 };
