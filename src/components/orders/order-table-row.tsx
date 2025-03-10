@@ -3,7 +3,15 @@ import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ArrowRight, X } from 'lucide-react';
 
-import { cancelOrder, GetOrdersResponse, Order } from '@/api';
+import {
+  cancelOrder,
+  deliveredOrder,
+  deliveringOrder,
+  GetOrdersResponse,
+  Order,
+  processingOrder,
+  Status,
+} from '@/api';
 import { queryClient } from '@/lib/react-query';
 import { Button } from '../ui/button';
 import { TableCell, TableRow } from '../ui/table';
@@ -15,32 +23,61 @@ type OrderTableRowProps = {
 };
 
 export const OrderTableRow = ({ order }: OrderTableRowProps) => {
-  const { mutateAsync: cancelOrderMutation, isPending } = useMutation({
-    mutationFn: cancelOrder,
-    onSuccess(_, { orderId }) {
-      const ordersCached = queryClient.getQueriesData<GetOrdersResponse>({
-        queryKey: ['orders'],
+  const updateOrdersStatus = (orderId: string, status: Status) => {
+    const ordersCached = queryClient.getQueriesData<GetOrdersResponse>({
+      queryKey: ['orders'],
+    });
+
+    ordersCached.forEach(([cacheKey, cacheData]) => {
+      if (!cacheData) return;
+
+      queryClient.setQueryData<GetOrdersResponse>(cacheKey, {
+        ...cacheData,
+        orders: cacheData.orders.map((order) => {
+          if (order.orderId === orderId) {
+            return {
+              ...order,
+              status,
+            };
+          }
+
+          return order;
+        }),
       });
+    });
+  };
 
-      ordersCached.forEach(([cacheKey, cacheData]) => {
-        if (!cacheData) return;
+  const { mutateAsync: cancelOrderMutation, isPending: isCancelling } =
+    useMutation({
+      mutationFn: cancelOrder,
+      onSuccess(_, { orderId }) {
+        updateOrdersStatus(orderId, 'canceled');
+      },
+    });
 
-        queryClient.setQueryData<GetOrdersResponse>(cacheKey, {
-          ...cacheData,
-          orders: cacheData.orders.map((order) => {
-            if (order.orderId === orderId) {
-              return {
-                ...order,
-                status: 'canceled',
-              };
-            }
+  const { mutateAsync: processingOrderMutation, isPending: isProcessing } =
+    useMutation({
+      mutationFn: processingOrder,
+      onSuccess(_, { orderId }) {
+        updateOrdersStatus(orderId, 'processing');
+      },
+    });
 
-            return order;
-          }),
-        });
-      });
-    },
-  });
+  const { mutateAsync: deliveringOrderMutation, isPending: isDelivering } =
+    useMutation({
+      mutationFn: deliveringOrder,
+      onSuccess(_, { orderId }) {
+        updateOrdersStatus(orderId, 'delivering');
+      },
+    });
+
+  const { mutateAsync: deliveredOrderMutation, isPending: isDelivered } =
+    useMutation({
+      mutationFn: deliveredOrder,
+      onSuccess(_, { orderId }) {
+        updateOrdersStatus(orderId, 'delivered');
+      },
+    });
 
   return (
     <TableRow>
@@ -67,28 +104,76 @@ export const OrderTableRow = ({ order }: OrderTableRowProps) => {
         })}
       </TableCell>
       <TableCell>
-        <Button variant='secondary' size='sm' className='w-32 cursor-pointer'>
-          <ArrowRight className='size-3' />
-          Aprovar
-        </Button>
+        {order.status === 'pending' && (
+          <Button
+            variant='secondary'
+            size='sm'
+            className='w-32 cursor-pointer'
+            disabled={isProcessing}
+            onClick={() => processingOrderMutation({ orderId: order.orderId })}
+          >
+            <ArrowRight className='size-3' />
+            {isProcessing ? (
+              <span className='animate-pulse'>Carregando...</span>
+            ) : (
+              <span>Aprovar</span>
+            )}
+          </Button>
+        )}
+
+        {order.status === 'processing' && (
+          <Button
+            variant='secondary'
+            size='sm'
+            className='w-32 cursor-pointer'
+            disabled={isDelivering}
+            onClick={() => deliveringOrderMutation({ orderId: order.orderId })}
+          >
+            <ArrowRight className='size-3' />
+            {isProcessing ? (
+              <span className='animate-pulse'>Carregando...</span>
+            ) : (
+              <span>Em entrega</span>
+            )}
+          </Button>
+        )}
+
+        {order.status === 'delivering' && (
+          <Button
+            variant='secondary'
+            size='sm'
+            className='w-32 cursor-pointer'
+            disabled={isDelivered}
+            onClick={() => deliveredOrderMutation({ orderId: order.orderId })}
+          >
+            <ArrowRight className='size-3' />
+            {isProcessing ? (
+              <span className='animate-pulse'>Carregando...</span>
+            ) : (
+              <span>Entregue</span>
+            )}
+          </Button>
+        )}
       </TableCell>
       <TableCell>
-        <Button
-          variant='outline'
-          size='sm'
-          className='w-32 cursor-pointer'
-          disabled={
-            isPending || !['pending', 'processing'].includes(order.status)
-          }
-          onClick={() => cancelOrderMutation({ orderId: order.orderId })}
-        >
-          <X className='size-3' />
-          {isPending ? (
-            <span className='animate-pulse'>Cancelando...</span>
-          ) : (
-            <span>Cancelar</span>
-          )}
-        </Button>
+        {order.status !== 'delivered' && (
+          <Button
+            variant='outline'
+            size='sm'
+            className='w-32 cursor-pointer'
+            disabled={
+              isCancelling || !['pending', 'processing'].includes(order.status)
+            }
+            onClick={() => cancelOrderMutation({ orderId: order.orderId })}
+          >
+            <X className='size-3' />
+            {isCancelling ? (
+              <span className='animate-pulse'>Carregando...</span>
+            ) : (
+              <span>Cancelar</span>
+            )}
+          </Button>
+        )}
       </TableCell>
     </TableRow>
   );
