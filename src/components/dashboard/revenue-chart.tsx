@@ -1,6 +1,13 @@
-import { TrendingUp } from 'lucide-react';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+import { useState } from 'react';
 
+import { useQuery } from '@tanstack/react-query';
+import { subDays } from 'date-fns';
+import { TrendingUp } from 'lucide-react';
+import { DateRange } from 'react-day-picker';
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
+
+import { getDailyRevenue } from '@/api/get-daily-revenue';
+import { DatePicker } from '../shared/date-picker';
 import {
   Card,
   CardContent,
@@ -16,16 +23,6 @@ import {
   ChartTooltipContent,
 } from '../ui/chart';
 
-const chartData = [
-  { date: '10/12', revenue: 1200 },
-  { date: '11/12', revenue: 800 },
-  { date: '12/12', revenue: 900 },
-  { date: '13/12', revenue: 400 },
-  { date: '14/12', revenue: 2300 },
-  { date: '15/12', revenue: 600 },
-  { date: '16/12', revenue: 750 },
-];
-
 const chartConfig = {
   desktop: {
     label: 'Receita diária',
@@ -34,42 +31,66 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export const RevenueChart = () => {
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: subDays(new Date(), 7),
+    to: new Date(),
+  });
+
+  const { data: dailyRevenue } = useQuery({
+    queryKey: ['metrics', 'daily-revenue', date],
+    queryFn: () =>
+      getDailyRevenue({
+        from: date?.from,
+        to: date?.to,
+      }),
+  });
+
+  const chartData = dailyRevenue?.map((item) => ({
+    date: item.date,
+    receipt: item.receipt / 100,
+  }));
+
   return (
     <Card className='col-span-6'>
-      <CardHeader>
-        <CardTitle>Receita no período</CardTitle>
-        <CardDescription>Receita diária no período</CardDescription>
+      <CardHeader className='flex flex-row items-center justify-between'>
+        <div>
+          <CardTitle>Receita no período</CardTitle>
+          <CardDescription>Receita diária no período</CardDescription>
+        </div>
+        <DatePicker date={date} onDateChange={setDate} />
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className='h-40 w-full'>
-          <LineChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey='date'
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Line
-              dataKey='revenue'
-              type='linear'
-              stroke='#993cc4'
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ChartContainer>
+        {dailyRevenue && (
+          <ChartContainer config={chartConfig} className='h-40 w-full'>
+            <LineChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+              <XAxis
+                dataKey='date'
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Line
+                dataKey='receipt'
+                type='linear'
+                stroke='#993cc4'
+                strokeWidth={2}
+              />
+            </LineChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className='flex-col items-start gap-2 text-sm'>
         <div className='flex gap-2 leading-none font-medium'>
