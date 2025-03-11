@@ -24,6 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table';
+import { OrderDetailsSkeleton } from './order-details-skeleton';
 import { OrderStatus } from './order-status';
 
 type OrderFilterSchema = {
@@ -54,7 +55,7 @@ export const OrderDetails = ({ orderId }: OrderFilterSchema) => {
           <DialogDescription>Detalhes do pedido</DialogDescription>
         </DialogHeader>
 
-        {order && (
+        {order ? (
           <div className='space-y-6'>
             <Table>
               <TableBody>
@@ -157,6 +158,8 @@ export const OrderDetails = ({ orderId }: OrderFilterSchema) => {
               </TableFooter>
             </Table>
           </div>
+        ) : (
+          <OrderDetailsSkeleton />
         )}
       </DialogContent>
     </Dialog>
