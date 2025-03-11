@@ -4,8 +4,12 @@ import { useSearchParams } from 'react-router';
 import { z } from 'zod';
 
 import { getOrders, Status } from '@/api';
-import { OrderTableFilters, OrderTableRow } from '@/components/orders';
-import { Pagination } from '@/components/shared';
+import {
+  OrderTableFilters,
+  OrderTableRow,
+  OrderTableSkeleton,
+} from '@/components/orders';
+import { Pagination, PaginationSkeleton } from '@/components/shared';
 import {
   Table,
   TableBody,
@@ -26,7 +30,7 @@ export const Orders = () => {
   const customerName = searchParams.get('customerName');
   const status = searchParams.get('status') as Status | null;
 
-  const { data: result } = useQuery({
+  const { data: result, isLoading: isLoadingOrders } = useQuery({
     queryKey: ['orders', pageIndex, orderId, customerName, status],
     queryFn: () => getOrders({ pageIndex, orderId, customerName, status }),
   });
@@ -65,6 +69,8 @@ export const Orders = () => {
               </TableHeader>
 
               <TableBody>
+                {isLoadingOrders && <OrderTableSkeleton />}
+
                 {result?.orders.map((order) => (
                   <OrderTableRow key={order.orderId} order={order} />
                 ))}
@@ -72,13 +78,15 @@ export const Orders = () => {
             </Table>
           </div>
 
-          {result && (
+          {result ? (
             <Pagination
               pageIndex={result.meta.pageIndex}
               perPage={result.meta.perPage}
               totalCount={result.meta.totalCount}
               onPageChange={handlePageChange}
             />
+          ) : (
+            <PaginationSkeleton />
           )}
         </div>
       </div>
