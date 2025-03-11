@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import { subDays } from 'date-fns';
-import { TrendingUp } from 'lucide-react';
+import { Loader2, TrendingUp } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
@@ -60,8 +60,11 @@ export const RevenueChart = () => {
         <DatePicker date={date} onDateChange={setDate} />
       </CardHeader>
       <CardContent>
-        {dailyRevenue && (
-          <ChartContainer config={chartConfig} className='h-40 w-full'>
+        {dailyRevenue ? (
+          <ChartContainer
+            config={chartConfig}
+            className='flex h-56 w-full flex-col justify-between'
+          >
             <LineChart
               accessibilityLayer
               data={chartData}
@@ -90,6 +93,10 @@ export const RevenueChart = () => {
               />
             </LineChart>
           </ChartContainer>
+        ) : (
+          <div className='flex h-[224px] w-full items-center justify-center'>
+            <Loader2 className='text-muted-foreground size-8 animate-spin' />
+          </div>
         )}
       </CardContent>
       <CardFooter className='flex-col items-start gap-2 text-sm'>
@@ -97,7 +104,8 @@ export const RevenueChart = () => {
           Tendência de alta de 5,2% este mês <TrendingUp className='h-4 w-4' />
         </div>
         <div className='text-muted-foreground leading-none'>
-          Exibindo os dados de 10/12/2022 - 16/12/2022
+          Exibindo os dados de {date?.from?.toLocaleDateString('pt-BR')} -{' '}
+          {date?.to?.toLocaleDateString('pt-BR')}
         </div>
       </CardFooter>
     </Card>

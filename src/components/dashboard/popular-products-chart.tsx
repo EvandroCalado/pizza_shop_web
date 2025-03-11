@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { TrendingUp } from 'lucide-react';
+import { Loader2, TrendingUp } from 'lucide-react';
 import { Pie, PieChart, Sector } from 'recharts';
 import { PieSectorDataItem } from 'recharts/types/polar/Pie';
 
@@ -57,7 +57,7 @@ export const PopularProductsChart = () => {
         <CardDescription>Produtos mais vendidos na semana</CardDescription>
       </CardHeader>
       <CardContent className='flex-1 pb-0'>
-        {popularProducts && (
+        {popularProducts ? (
           <ChartContainer
             config={cartConfig}
             className='mx-auto aspect-square max-h-[250px]'
@@ -83,14 +83,15 @@ export const PopularProductsChart = () => {
               />
             </PieChart>
           </ChartContainer>
+        ) : (
+          <div className='flex h-[250px] w-full items-center justify-center'>
+            <Loader2 className='text-muted-foreground size-8 animate-spin' />
+          </div>
         )}
       </CardContent>
       <CardFooter className='flex-col gap-2 text-sm'>
         <div className='flex items-center gap-2 leading-none font-medium'>
           Tendência de alta de 5,2% este mês <TrendingUp className='h-4 w-4' />
-        </div>
-        <div className='text-muted-foreground leading-none'>
-          Exibindo os dados de 10/12/2022 - 16/12/2022
         </div>
       </CardFooter>
     </Card>
