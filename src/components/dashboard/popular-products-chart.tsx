@@ -1,7 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
 import { TrendingUp } from 'lucide-react';
 import { Pie, PieChart, Sector } from 'recharts';
 import { PieSectorDataItem } from 'recharts/types/polar/Pie';
 
+import { getPopularProducts } from '@/api';
 import {
   Card,
   CardContent,
@@ -17,41 +19,37 @@ import {
   ChartTooltipContent,
 } from '../ui/chart';
 
-const chartData = [
-  { product: 'Mussarela', amount: 65, fill: '#4F46E5' },
-  { product: 'Calabresa', amount: 42, fill: '#F59E0B' },
-  { product: 'Frango', amount: 28, fill: '#EF4444' },
-  { product: 'Queijo', amount: 16, fill: '#10B981' },
-  { product: 'Bacon', amount: 34, fill: '#3B82F6' },
+const colors = [
+  { color: '#4F46E5' },
+  { color: '#F59E0B' },
+  { color: '#EF4444' },
+  { color: '#10B981' },
+  { color: '#8720cc' },
 ];
 
-const chartConfig = {
-  visitors: {
-    label: 'Visitors',
-  },
-  chrome: {
-    label: 'Chrome',
-    color: '#4F46E5',
-  },
-  safari: {
-    label: 'Safari',
-    color: '#F59E0B',
-  },
-  firefox: {
-    label: 'Firefox',
-    color: '#EF4444',
-  },
-  edge: {
-    label: 'Edge',
-    color: '#10B981',
-  },
-  other: {
-    label: 'Other',
-    color: '#3B82F6',
-  },
-} satisfies ChartConfig;
-
 export const PopularProductsChart = () => {
+  const { data: popularProducts } = useQuery({
+    queryKey: ['metrics', 'popular-products'],
+    queryFn: getPopularProducts,
+  });
+
+  const cartConfig = popularProducts
+    ? (Object.fromEntries(
+        popularProducts.map((product, index) => [
+          product.product,
+          {
+            label: product.product,
+            color: colors[index].color,
+          },
+        ]),
+      ) satisfies ChartConfig)
+    : {};
+
+  const data = popularProducts?.map((product, index) => ({
+    ...product,
+    fill: colors[index].color,
+  }));
+
   return (
     <Card className='col-span-3 flex flex-col'>
       <CardHeader className='items-center pb-0'>
@@ -59,31 +57,33 @@ export const PopularProductsChart = () => {
         <CardDescription>Produtos mais vendidos na semana</CardDescription>
       </CardHeader>
       <CardContent className='flex-1 pb-0'>
-        <ChartContainer
-          config={chartConfig}
-          className='mx-auto aspect-square max-h-[250px]'
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={chartData}
-              dataKey='amount'
-              nameKey='product'
-              innerRadius={60}
-              strokeWidth={5}
-              activeIndex={0}
-              activeShape={({
-                outerRadius = 0,
-                ...props
-              }: PieSectorDataItem) => (
-                <Sector {...props} outerRadius={outerRadius + 10} />
-              )}
-            />
-          </PieChart>
-        </ChartContainer>
+        {popularProducts && (
+          <ChartContainer
+            config={cartConfig}
+            className='mx-auto aspect-square max-h-[250px]'
+          >
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Pie
+                data={data}
+                dataKey='amount'
+                nameKey='product'
+                innerRadius={60}
+                strokeWidth={5}
+                activeIndex={0}
+                activeShape={({
+                  outerRadius = 0,
+                  ...props
+                }: PieSectorDataItem) => (
+                  <Sector {...props} outerRadius={outerRadius + 10} />
+                )}
+              />
+            </PieChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className='flex-col gap-2 text-sm'>
         <div className='flex items-center gap-2 leading-none font-medium'>

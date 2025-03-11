@@ -8,6 +8,7 @@ export * from './get-month-order-amount';
 export * from './get-month-revenue';
 export * from './get-order-details';
 export * from './get-orders';
+export * from './get-popular-products';
 export * from './get-profile';
 export * from './processing-order';
 export * from './sign-in';
