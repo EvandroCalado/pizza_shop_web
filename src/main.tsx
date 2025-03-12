@@ -5,13 +5,14 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 
 import { Toaster } from '@/components/ui/sonner';
 import { AppLayout, AuthLayout } from '@/pages/_layouts';
-import { Dashboard, NotFound, Orders } from '@/pages/app';
+import { Dashboard, Orders } from '@/pages/app';
 import { SignIn, SignUp } from '@/pages/auth';
 import { ThemeProvider } from './components/theme';
 
 import './index.css';
 
 import { queryClient } from './lib/react-query';
+import { NotFound } from './pages/not-found';
 
 createRoot(document.getElementById('root')!).render(
   <HelmetProvider>
