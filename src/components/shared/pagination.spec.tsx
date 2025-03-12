@@ -5,7 +5,7 @@ import { Pagination } from './pagination';
 
 const mockedOnPageChange = vi.fn();
 
-describe('Pagination', () => {
+describe('<Pagination />', () => {
   beforeEach(() => {
     mockedOnPageChange.mockClear();
   });

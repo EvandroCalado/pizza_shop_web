@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { OrderStatus } from './order-status';
 
-describe('Order Status', () => {
+describe('<OrderStatus />', () => {
   it('should display correctly status', () => {
     const { rerender } = render(<OrderStatus status='pending' />);
 
