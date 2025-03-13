@@ -12,33 +12,36 @@ import { ThemeProvider } from './components/theme';
 import './index.css';
 
 import { queryClient } from './lib/react-query';
+import { enableMSW } from './mocks';
 import { NotFound } from './pages/not-found';
 
-createRoot(document.getElementById('root')!).render(
-  <HelmetProvider>
-    <ThemeProvider defaultTheme='system' storageKey='pizza-shop-theme'>
-      <QueryClientProvider client={queryClient}>
-        <Helmet titleTemplate='%s | Pizza Shop' />
-        <Toaster richColors />
-        <BrowserRouter>
-          <Routes>
-            {/* app */}
-            <Route path='/' element={<AppLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path='orders' element={<Orders />} />
-            </Route>
+enableMSW().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <HelmetProvider>
+      <ThemeProvider defaultTheme='system' storageKey='pizza-shop-theme'>
+        <QueryClientProvider client={queryClient}>
+          <Helmet titleTemplate='%s | Pizza Shop' />
+          <Toaster richColors />
+          <BrowserRouter>
+            <Routes>
+              {/* app */}
+              <Route path='/' element={<AppLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path='orders' element={<Orders />} />
+              </Route>
 
-            {/* auth */}
-            <Route element={<AuthLayout />}>
-              <Route path='sign-in' element={<SignIn />} />
-              <Route path='sign-up' element={<SignUp />} />
-            </Route>
+              {/* auth */}
+              <Route element={<AuthLayout />}>
+                <Route path='sign-in' element={<SignIn />} />
+                <Route path='sign-up' element={<SignUp />} />
+              </Route>
 
-            {/* 404 */}
-            <Route path='*' element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </ThemeProvider>
-  </HelmetProvider>,
-);
+              {/* 404 */}
+              <Route path='*' element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </HelmetProvider>,
+  );
+});
