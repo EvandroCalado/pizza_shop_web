@@ -15,6 +15,8 @@ export const AppLayout = () => {
       (error) => {
         if (isAxiosError(error) && error.response?.status === 401) {
           navigate('/sign-in', { replace: true });
+        } else {
+          throw error;
         }
       },
     );
