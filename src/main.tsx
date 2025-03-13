@@ -12,7 +12,7 @@ import { ThemeProvider } from './components/theme';
 import './index.css';
 
 import { queryClient } from './lib/react-query';
-import { enableMSW } from './mocks';
+import { enableMSW } from './mocks/enableMSW';
 import { NotFound } from './pages/not-found';
 
 enableMSW().then(() => {

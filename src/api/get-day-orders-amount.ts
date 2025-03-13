@@ -1,6 +1,6 @@
 import { api } from '@/lib/axios';
 
-type GetDayOrdersAmountResponse = {
+export type GetDayOrdersAmountResponse = {
   amount: number;
   diffFromYesterday: number;
 };

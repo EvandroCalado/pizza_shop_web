@@ -1,6 +1,6 @@
 import { api } from '@/lib/axios';
 
-type SignUpProps = {
+export type SignUpBody = {
   restaurantName: string;
   managerName: string;
   email: string;
@@ -12,6 +12,11 @@ export const signup = async ({
   managerName,
   email,
   phone,
-}: SignUpProps) => {
-  await api.post('/restaurants', { restaurantName, managerName, email, phone });
+}: SignUpBody) => {
+  await api.post('/restaurants', {
+    restaurantName,
+    managerName,
+    email,
+    phone,
+  });
 };

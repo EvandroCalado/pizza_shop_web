@@ -1,6 +1,6 @@
 import { api } from '@/lib/axios';
 
-type GetMonthRevenueResponse = {
+export type GetMonthRevenueResponse = {
   receipt: number;
   diffFromLastMonth: number;
 };
