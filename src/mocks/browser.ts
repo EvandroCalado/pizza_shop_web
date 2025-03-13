@@ -1,3 +1,5 @@
 import { setupWorker } from 'msw/browser';
 
-export const worker = setupWorker();
+import { signInMock } from './sign-in-mock';
+
+export const worker = setupWorker(signInMock);

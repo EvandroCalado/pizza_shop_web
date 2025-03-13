@@ -1,9 +1,9 @@
 import { api } from '@/lib/axios';
 
-type SignInProps = {
+export type SignInBody = {
   email: string;
 };
 
-export const signin = async ({ email }: SignInProps) => {
+export const signin = async ({ email }: SignInBody) => {
   await api.post('/authenticate', { email });
 };
