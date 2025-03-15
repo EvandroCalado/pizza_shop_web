@@ -1,14 +1,20 @@
 import { setupWorker } from 'msw/browser';
 
 import {
+  cancelOrderMock,
+  deliveredOrderMock,
+  deliveringOrderMock,
   getDailyRevenueMock,
   getDayOrdersAmountMock,
   getManagedRestaurantMock,
   getMonthCanceledOrdersAmountMock,
   getMonthOrdersAmountMock,
   getMonthRevenueMock,
+  getOrdersDetailsMock,
+  getOrdersMock,
   getPopularProductsMock,
   getProfileMock,
+  processingOrderMock,
   signInMock,
   signUpMock,
   updateProfileMock,
@@ -25,5 +31,11 @@ export const worker = setupWorker(
   getPopularProductsMock,
   getManagedRestaurantMock,
   getProfileMock,
+  getOrdersMock,
+  getOrdersDetailsMock,
   updateProfileMock,
+  processingOrderMock,
+  cancelOrderMock,
+  deliveredOrderMock,
+  deliveringOrderMock,
 );

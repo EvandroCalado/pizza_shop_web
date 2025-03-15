@@ -16,7 +16,7 @@ export type OrderItem = {
   };
 };
 
-type getOrdersDetailsResponse = {
+export type GetOrdersDetailsResponse = {
   id: string;
   createdAt: string;
   status: Status;
@@ -26,7 +26,7 @@ type getOrdersDetailsResponse = {
 };
 
 export const getOrdersDetails = async (orderId: string) => {
-  const response = await api.get<getOrdersDetailsResponse>(
+  const response = await api.get<GetOrdersDetailsResponse>(
     `/orders/${orderId}`,
   );
 

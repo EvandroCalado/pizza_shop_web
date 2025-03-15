@@ -1,6 +1,6 @@
 import { api } from '@/lib/axios';
 
-type DeliveringOrderParams = {
+export type DeliveringOrderParams = {
   orderId: string;
 };
 
